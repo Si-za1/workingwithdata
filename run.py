@@ -60,10 +60,11 @@ def read_files():
 def create_tables():
 
     sql_files = [
-        "sql/employee.sql",
-        "sql/timesheet.sql",
+        "sql/raw/employee.sql",
+        "sql/raw/timesheet.sql",
         "sql/std/inserte.sql",
-        "sql/std/insertem.sql"
+        "sql/std/insertem.sql",
+        "sql/fetch.sql"
         ]
     try:
         with Connection() as connection:

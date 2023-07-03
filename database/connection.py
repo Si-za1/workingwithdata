@@ -73,7 +73,9 @@ class Connection:
     def create_tables_from_sql_file(self, sql_file_path):
         try:
             with open(sql_file_path, "r") as f:
-                sql_statements = f.read().split(';')
+                sql_file_content = f.read()
+
+            sql_statements = sql_file_content.split(';')
 
             for statement in sql_statements:
                 statement = statement.strip()
@@ -84,7 +86,7 @@ class Connection:
 
         except Exception as e:
             print("Error creating tables from SQL file:", e)
-            
+
 
     def insert_data(self, table_name, data):
         try:
