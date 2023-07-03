@@ -19,9 +19,9 @@ class Connection:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.disconnect()
+        
 
-
-    def connect(self):
+    def connect(self, schema=None):
         try:
             self.db_connection = psycopg2.connect(
                 host=DB_HOST,
@@ -30,7 +30,12 @@ class Connection:
                 password=DB_PASSWORD,
                 port=DB_PORT
             )
+            if schema:
+                self.db_cursor = self.db_connection.cursor()
+                self.db_cursor.execute(f"SET search_path TO {schema}")
+
             self.db_cursor = self.db_connection.cursor()
+
             print("Connection established successfully")
 
         except psycopg2.Error as error:
@@ -39,8 +44,11 @@ class Connection:
     def disconnect(self):
         if self.db_cursor:
             self.db_cursor.close()
+            self.db_cursor = None
         if self.db_connection:
             self.db_connection.close()
+            self.db_connection = None
+
         print("Disconnected from Postgres")
     
     def execute_query(self, query):
@@ -52,6 +60,7 @@ class Connection:
             self.db_connection.rollback()
             print("Error executing SQL query:", error)
 
+
     def create_table(self, table_name, create_table_statement):
         try:
             self.db_cursor.execute(create_table_statement)
@@ -59,6 +68,7 @@ class Connection:
             print(f"Table '{table_name}' created successfully!")
         except psycopg2.Error as error:
             print(f"Error creating table '{table_name}':", error)
+
 
     def create_tables_from_sql_file(self, sql_file_path):
         try:
@@ -74,15 +84,18 @@ class Connection:
 
         except Exception as e:
             print("Error creating tables from SQL file:", e)
+            
 
     def insert_data(self, table_name, data):
         try:
+            schema, table = table_name.split('.')
             columns = ', '.join(data.keys())
             values = ', '.join(['%s'] * len(data))
-            insert_query = f"INSERT INTO {table_name} ({columns}) VALUES ({values})"
+            insert_query = f"INSERT INTO \"{schema}\".\"{table}\" ({columns}) VALUES ({', '.join(['%s']*len(data))})"
             self.db_cursor.execute(insert_query, list(data.values()))
             self.db_connection.commit()
-            print("Data inserted successfully!")
+            # print("Data inserted successfully!")
+        
         except psycopg2.Error as error:
             self.db_connection.rollback()
-            print("Error inserting data:", error)
+     

@@ -1,6 +1,6 @@
-TRUNCATE TABLE  timerecord ;
+TRUNCATE TABLE  raw.timerecord ;
 
-CREATE TABLE timerecord (
+CREATE TABLE raw.timerecord (
   employee_id VARCHAR,
   cost_center VARCHAR,
   punch_in_time VARCHAR,
@@ -9,3 +9,4 @@ CREATE TABLE timerecord (
   hours_worked VARCHAR,
   paycode VARCHAR
 );
+

@@ -1,7 +1,7 @@
-TRUNCATE TABLE employees CASCADE;
+TRUNCATE TABLE raw.employees CASCADE;
 
 
-CREATE TABLE employees (
+CREATE TABLE raw.employees (
   employee_id VARCHAR,
   first_name VARCHAR,
   last_name VARCHAR,
